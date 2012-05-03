@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="description" content="jQuery Text Animation Plugin is for making custom text animations" />
+        <meta name="keywords" content="text animation, text effect, jquery, plugin, jquery plugin, javascript, Web Design, javascript framework, Quark" />
+        <meta name="author" content="sideroad" />
+        <title>jQuery Text Animation - jQuery Plugins - sideroad</title>
+        <script type="text/javascript" src="lib/jquery.min.js"></script>
+        <script type="text/javascript" src="lib/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="src/jquery.textanimation.js"></script>
+        
+    </head>
+    <body>
+        <style>
+        div.demo{
+           font-size: 50px;
+           margin: 100px; 
+        }
+        </style>
+        <h1>jQuery Text Animation Plugin</h1>
+        <div id="demo_roll1" class="demo" >Normal roll.</div>		
+        <div id="demo_roll2" class="demo" >You can customize settings.</div>
+        <div id="demo_step1" class="demo" >Normal step.</div>
+        <div id="demo_step2" class="demo" >You can customize settings.</div>
+        <div id="demo_high1" class="demo" >Normal highlight.</div>
+        <div id="demo_high2" class="demo" >You can customize settings.</div>
+        <div id="demo_jump1" class="demo" >Normal jump.</div>
+        <div id="demo_jump2" class="demo" >You can customize settings.</div>
+        <div id="demo_puff1" class="demo" >Normal Puff.</div>
+        <div id="demo_puff2" class="demo" >You can customize settings.</div>
+        <script type="text/javascript">
+$(document.body).ready(function(){
+    $("div#demo_roll1").textAnimation({
+		mode: "roll"
+	});
+    $("div#demo_roll2").textAnimation({
+		mode: "roll",
+		minsize: 20,
+		magnification: 30,
+		fixed: "top",
+		delay: 5,
+		stuff: 1.5
+	});
+    $("div#demo_step1").textAnimation({
+		mode: "step"
+	});
+	$("div#demo_step2").textAnimation({
+	    mode:"step",
+	    minsize:20,            //minimum font size[integer]
+	    maxsize:60,            //maximum font size[integer]
+	    upper:false,           //is upper step? [boolean]
+	    fixed:"top",           //which fixed top or bottom ["top","bottom"]
+	    stuff:2.2,             //font stuff quantity[float]
+	    delay:200,             //delay for between charactors animation
+	    interval:0,            //interval for between animation
+	    duration:1000          //animation duration
+	});
+    $("div#demo_high1").textAnimation({
+		mode: "highlight"
+	});
+    $("div#demo_high2").textAnimation({
+		mode: "highlight",
+		baseColor: "#111111",
+		highlightColor: "#2FFF5F",
+		delay: 35,
+		interval: 0,
+		duration: 100
+	});    
+	$("div#demo_jump1").textAnimation({
+	    mode:"jump"
+	});
+	$("div#demo_jump2").textAnimation({
+	    mode:"jump",         
+	    altitude:10,              //jump altitude[integer] 
+	    bound :false,             //bound animation[boolean]
+        fixed:"bottom",           //which fixed top or bottom ["top","bottom"]
+	    delay:80,                 //delay time for animation between characters[integer] 
+	    interval:0,               //interval time for between animation[integer]
+	    duration:400              //animation duration time[integer]
+	});
+    $("div#demo_puff1").textAnimation({
+        mode:"puff"
+    });
+    $("div#demo_puff2").textAnimation({
+        mode:"puff",
+        color:"#77FF6F",          //highlight puffing color
+        percent:200,              //font scale percentage.[integer]     
+        interval:1000,               //interval time for between animation[integer]
+        duration:1000,             //animation duration time[integer]
+        times : 5                 //how times puffing animation[integer]
+    });
+});
+        </script>
+    </body>
+</html>
