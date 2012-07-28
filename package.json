@@ -1,0 +1,37 @@
+{
+  "name": "jquery.textAnimation",
+  "title": "jQuery Text Animation",
+  "description": "A jQuery text animation plugin.",
+  "version": "1.2.0",
+  "homepage": "https://github.com/sideroad/jquery.textanimation",
+  "author": {
+    "name": "sideroad",
+    "url": "http://sideroad.secret.jp/"
+  },
+  "maintainers": [
+    {
+      "name": "sideroad",
+      "email": "sideroad.jp@gmail.com",
+      "url": "http://sideroad.secret.jp/"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/sideroad/jquery.textanimation.git"
+  },
+  "bugs": "https://github.com/sideroad/jquery.textanimation/issues",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://www.opensource.org/licenses/MIT"
+    },
+    {
+      "type": "GPL",
+      "url": "http://www.opensource.org/licenses/GPL-2.0"
+    }
+  ],
+  "dependencies": {},
+  "devDependencies": {
+  },
+  "keywords": [ "animation", "text" ]
+}
