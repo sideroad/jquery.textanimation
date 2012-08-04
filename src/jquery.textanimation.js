@@ -102,12 +102,15 @@
                     e : e,
 					minsize : 15,
 					magnification:15,
-					delay : 20,
+					delay : 30,
+					interval : 0,
+					repeat : true,
                     onStart : false,
 					onFinish : false,
 					onToggle : false,
 					stuff : 1,
-					fixed : "bottom"
+					fixed : "bottom",
+					top : 1
                 },settings);
                 
                 parseDiv(e,options.minsize/options.stuff,options.fixed);
@@ -117,28 +120,28 @@
                 e.css({height:minsize+magnification+"px",textAlign:"center"});
 				var elements = e.children();
 				var de = options.delay;
-                var r = function(){
-                    i--;
-                    elements.each(function(j){
-                        var fontSize = Math.abs(Math.sin((i+j)/de)*magnification)+minsize;
-                        this.style.fontSize = fontSize+"px";
-						this.style.width = minsize+"px";
+                var duration = de * elements.length;
+                var keepExec = false;
+                var start = function(){
+                    elements.each(function( i, elem ){
+                        elem.style.width=minsize+"px";
+                        $(elem).transition({ 
+                                fontSize: minsize + magnification,
+                                duration : duration,
+                                easing : "in-out",
+                                delay : de*i
+                            })
+                            .transition({ 
+                                fontSize : minsize,
+                                duration : duration,
+                                easing : "in-out"
+                            });
                     });
-                };
+                }
 				
-				if (options.onStart) {
-					var intervalId;
-                    e.bind(options.onStart, function(){
-						r();
-						intervalId = setInterval(r,30);
-					});
-					e.bind(options.onFinish,function(){
-						if(intervalId) clearInterval(intervalId);
-					});
-				} else {
-					r();
-					setInterval(r, 30);
-				}
+                options.time = (duration*3);
+                execute( options, start );
+				
 			},
 			
 			step : function(e) {
@@ -180,43 +183,34 @@
 				
                 var start = function(){
                     var left = 0;
-                    elements.each(function(i){
-                        var c = $(this);
+                    elements.each(function( i, elem ){
                         
-                        setTimeout(function(){
-                            var fs = ba + (m * i);
-                            c.animate({
-                                fontSize:fs+"px",
-                                width : fs,
-                                left: left,
-								opacity:1.0
-                            },{
-                                duration: du
-                            });
-                            left += (fs / st);
-                            
-                        },de*i);
+                        var fs = ba + (m * i);
+                        $(elem).transition({
+                            fontSize: fs+"px",
+                            width : fs,
+                            left: left,
+                            opacity:1.0,
+                            duration : du,
+                            delay : de * i
+                        });
+                        left += (fs / st);
                     });
                 };
                 var finish = function(){
-                    elements.each(function(i){
-                        var c = $(this);
-                                                
-                        setTimeout(function(){
-                            c.animate({
-                                fontSize: "0px",
-                                width: 0,
-                                left: 0,
-                                opacity:0
-                            },{
-                                duration: du
-                            });
-                            
-                        },de*i);
+                    elements.each(function( i, elem ){
+                        $(elem).transition({
+                            fontSize: "0px",
+                            width: 0,
+                            left: 0,
+                            opacity:0,
+                            delay : de*i,
+                            duration: du
+                        });
                     });
                 };
 				
-				options.time = (options.delay * length);
+				options.time = (options.delay * length)+du;
 				execute(options,start, finish);
 			},
             
@@ -244,23 +238,19 @@
                 var de = options.delay;
                 
                 var start = function(){
-                    elements.each(function(i){
-                        var s = $(this);
-                        setTimeout(function(){
-                            s.animate({
-                                color: hc
-                            }, {
-                                duration: du
-                            }).animate({
-                                color: bc
-                            },{
-                                duration: du
-                            });
-                        },de*i);
+                    elements.each(function( i, elem ){
+                        $(elem).transition({
+                            color : hc,
+                            delay : de*i,
+                            duration : du
+                        }).transition({
+                            color : bc,
+                            duration : du
+                        });
                     });
                 };
                 
-                options.time = (options.delay * length);
+                options.time = (options.delay * length)+(du*3);
                 execute(options,start);
             },
             
@@ -288,29 +278,29 @@
                 var bo = options.bound;
                 var du = options.duration;
                 var de = options.delay;
-				var ea = options.bound ? "easeOutBounce" : "easeInQuad";
+				var ea = options.bound ? "in" : "in-out";
 				var fi = options.fixed;
                 
                 var start = function(){
-                    elements.each(function(i){
-                        var s = $(this);
-                        setTimeout(function(){
-							var cssleave = {};
-                            cssleave[fi] = al;
-							var cssarrive = {};
-                            cssarrive[fi] = 0;
-                            s.animate(cssleave, {
-                                duration: du,
-								easing : "swing"
-                            }).animate(cssarrive,{
-                                duration: du,
-								easing : ea
-                            });
-                        },de*i);
+                    elements.each(function( i, elem ){
+                        var cssleave = {
+                            duration: du,
+                            delay : de*i,
+                            easing : "out"
+                        };
+                        cssleave[fi] = al;
+                        var cssarrive = {
+                            duration: du,
+                            easing : ea
+                        };
+                        cssarrive[fi] = 0;
+                        $(elem).transition(cssleave)
+                               .transition(cssarrive);
+                        
                     });
                 };
                 
-                options.time = (options.delay * length);
+                options.time = (options.delay * length)+(du*2);
                 execute(options,start);
             } ,
             
@@ -327,93 +317,29 @@
 					times : 1
                 },settings);
                 
-				var times = options.times;
-				var du = options.duration/options.times;
                 var start = function(){
-					var f = function(){
-                            var position = e.position();
-                            var css = {
-                                "position": "absolute",
-                                "left": position.left + "px",
-                                "top": position.top + "px",
-                                "z-index": -1000
-                            };
-                            if (options.color) 
-                                css.color = options.color;
-                            if (options.backgroundColor) 
-                                css.backgroundColor = options.backgroundColor;
-                            
-                            e.clone().attr("id", "").insertBefore(e).css(css).hide("puff", {
-                                percent: options.percent
-                            }, options.duration, function(){
-                                $(this).remove();
-                            });
-				    };
-					f();
-                    for(var i=0;i<times-1;i++) {
-						setTimeout(f,du*i);
-					}
+					var position = e.position();
+                    var css = {
+                        "position": "absolute",
+                        "left": position.left + "px",
+                        "top": position.top + "px",
+                        "z-index": -1000
+                    };
+                    
+                    if (options.color) 
+                        css.color = options.color;
+                    if (options.backgroundColor) 
+                        css.backgroundColor = options.backgroundColor;
+					e.clone().attr("id", "").insertBefore(e).css(css).transition({
+                        opacity: 0,
+                        scale: 1.6,
+                        duration : options.duration
+                    }, function(){
+                        $(this).remove();
+                    });
+					
                 };
                 options.time = options.duration;
-                execute(options,start);
-            },
-            
-            bigMessage : function(e) {
-                var options = $.extend({
-                    e : e,
-                    duration : 700,
-                    interval : 5000,
-                    onStart : false,
-                    onFinish : false,
-                    repeat : false,
-                    color : false,
-					scale : 0.7
-                },settings);
-                
-				var css ={
-                    position: "relative",
-                    fontStyle: "monospace",
-                    top: 0,
-                    overflow: "hidden"
-                };
-				if(options.color) css.color = options.color;
-				
-				var message = $("<div></div>").text(e.text()).css(css);
-				var container = $("<div></div>").css({
-                        position:"fixed",
-                        overflow:"hidden"
-                }).append(message);
-                var length = message.text().length;
-				var du = options.duration*length;
-				var sc = options.scale;
-                var start = function(){
-                    var bWidth = $(window).width();
-                    var bHeight = $(window).height();
-                    var fontSize = bHeight*sc;
-
-					container.css({
-                        top : (bHeight/2)-(fontSize/2),
-                        width : bWidth,
-                        height: fontSize
-                    });
-
-                    $(document.body).append(container);
-                    message.css({
-                        fontSize : fontSize+"px",
-                        left : bWidth,
-                        width : fontSize*length/2,
-                        height: fontSize
-					}).animate({
-						left : -1*fontSize*length/2
-					},{
-						easing:"linear",
-						duration: du,
-						complete: function(){
-							container.remove();
-						}
-					});
-            };
-                options.time = du;
                 execute(options,start);
             }
 		};
